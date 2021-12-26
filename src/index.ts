@@ -1,8 +1,12 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, VoiceChannel } from "discord.js";
 import { Readable } from "stream";
+import disbut from "discord-buttons";
+import { okRecord, cancelRecord } from "./static";
 
 const client:Client = new Client();
 const prefix:"r!" = "r!";
+
+disbut(client);
 
 class Silence extends Readable {
   _read() {
@@ -15,14 +19,18 @@ client.on("ready", () => {
   client.user?.setPresence({ activity: { name: "r!start", type: "LISTENING" }});
 });
 
-client.on("message", (message:Message) => {
+client.on("message", async (message:Message) => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
+  if (!message.member) return message.reply("DMで実行しないでください！");
   const args: string[] = message.content
     .slice(prefix.length)
     .trim()
     .split(/ +/g);
   const command: string = args.shift()!.toLowerCase();
   if (command === "start") {
+    const vc:VoiceChannel | null = message.member.voice.channel;
+    if (!vc) return message.reply("先にボイスチャンネルに参加してください！");
+    const confirmMsg: Message = await message.channel.send({ content: `**警告:** 録音を開始すると、このVCにいる全ての人の音声が録音されます。\n本当に録音しますか?`, buttons: [okRecord, cancelRecord]});
   }
 })
