@@ -1,0 +1,35 @@
+{
+  "name": "guacamole",
+  "version": "1.0.0",
+  "description": "Record a Discord voice channel with discord.js v12.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waki285/Guacamole.git"
+  },
+  "keywords": [
+    "record"
+  ],
+  "author": "waki285 <suzuneu@suzuneu.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/waki285/Guacamole/issues"
+  },
+  "homepage": "https://github.com/waki285/Guacamole#readme",
+  "devDependencies": {
+    "node": "^16.13.1",
+    "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": ">=12.x"
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "chalk": "^4.1.2",
+    "discord.js": "^12.5.3",
+    "ffmpeg": "0.0.4"
+  }
+}

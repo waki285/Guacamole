@@ -1,0 +1,11 @@
+.env
+.upm
+.npm
+.git
+node_modules
+.breakpoints
+.ssh
+c.js
+i.sh
+*.pub
+dist
