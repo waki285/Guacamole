@@ -11,3 +11,4 @@ i.sh
 dist
 output/*
 !.gitkeep
+ffmpeg*

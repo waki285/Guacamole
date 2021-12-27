@@ -1,0 +1,1 @@
+ffmpeg -f s16le -ar 44.1k -ac 2 -i $1 $1.wav
