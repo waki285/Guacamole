@@ -1,0 +1,14 @@
+c.js
+i.sh
+.ssh
+assets
+dist
+.eslintignore
+.prettierignore
+.gitignore
+LICENSE
+*.pub
+tsconfig.json
+package-lock.json
+package.json
+README.md
