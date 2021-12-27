@@ -14,6 +14,8 @@ const prefix:"r!" = "r!";
 
 disbut(client);
 
+const recording: Map<Snowflake, Set<Snowflake>> = new Map();
+
 class Silence extends Readable {
   _read() {
     this.push(Buffer.from([0xf8, 0xff, 0xfe]));
@@ -28,7 +30,7 @@ client.on("ready", () => {
 client.on("message", async (message:Message) => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
-  if (!message.member) return message.reply("DMで実行しないでください！");
+  if (!message.member || !message.guild) return message.reply("DMで実行しないでください！");
   const args: string[] = message.content
     .slice(prefix.length)
     .trim()
@@ -65,6 +67,10 @@ client.on("message", async (message:Message) => {
       const receiver: VoiceReceiver = connection.receiver;
       connection.on("speaking", (user: User, speaking: Readonly<Speaking>) => {
         if (speaking) {
+          const now: Set<Snowflake> = recording.get(message.guild!.id) || new Set();
+          if (now.has(user.id)) return;
+          now.add(user.id);
+          recording.set(message.guild!.id, now);
           message.channel.send(`${user.tag} を録音開始しました。`);
           const audioStream = receiver.createStream(user, { mode: "pcm", end: "manual" });
           const outputStream = createWriteStream(`./output/${Date.now()}-${user.id}.pcm`);
