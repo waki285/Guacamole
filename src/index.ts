@@ -89,4 +89,14 @@ client.on("message", async (message:Message) => {
   }
 });
 
+client.on("clickButton", async (button: MessageComponent) => {
+  if (!button.guild || !button.guild.me) return;
+  if (button.id === "stop") {
+    await button.reply.think(true);
+    if (!button.guild.me.voice.channel) return button.reply.edit({ content: "録音されていません。"});
+    recording.delete(button.guild.id);
+    button.guild.me.voice.channel.leave();
+  }
+})
+
 client.login(process.env.BOT_TOKEN);
