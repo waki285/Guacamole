@@ -1,7 +1,7 @@
-import { Client, Message, VoiceChannel } from "discord.js";
+import { Client, Collection, Message, Snowflake, Speaking, User, VoiceChannel, VoiceReceiver } from "discord.js";
 import { Readable } from "stream";
-import disbut from "discord-buttons";
-import { okRecord, cancelRecord } from "./static";
+import disbut, { MessageActionRow, MessageComponent } from "discord-buttons";
+import { okRecord, cancelRecord, stopRecord } from "./static";
 import { VoiceConnection } from "discord.js";
 import { createWriteStream } from "fs"
 import { config } from "dotenv";
@@ -47,6 +47,34 @@ client.on("message", async (message:Message) => {
     connection.play(voice.data)
     const confirmMsg: Message = await message.channel.send({ content: `**警告:** 録音を開始すると、このVCにいる全ての人の音声が録音されます。\n本当に録音しますか?`, buttons: [okRecord, cancelRecord]});
     confirmMsg.awaitButtons((c) => c.clicker.user.id === message.author.id, { max: 1 })
+    .then(async (collected: Collection<Snowflake, MessageComponent>) => {
+      const i = collected.first();
+      if (!i) throw new Error("unknown error");
+      if (i.id === "cancel") {
+        vc.leave();
+        await i.reply.defer(false);
+        i.message.edit({ content: "キャンセルされました。", components: [] });
+        return;
+      }
+
+      await i.reply.defer(false);
+      await i.message.edit({ content: "録音しています。", components: [new MessageActionRow().addComponent(stopRecord)] });
+
+      connection.play(new Silence(), { type: "opus" });
+      
+      const receiver: VoiceReceiver = connection.receiver;
+      connection.on("speaking", (user: User, speaking: Readonly<Speaking>) => {
+        if (speaking) {
+          message.channel.send(`${user.tag} を録音開始しました。`);
+          const audioStream = receiver.createStream(user, { mode: "pcm", end: "manual" });
+          const outputStream = createWriteStream(`./output/${Date.now()}-${user.id}.pcm`);
+          audioStream.pipe(outputStream);
+          outputStream.on("pipe", console.log);
+          audioStream.on("end", () => message.channel.send(`${user.tag} を録音停止しました。`));
+        }
+      })
+
+    })
   }
 });
 

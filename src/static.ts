@@ -10,4 +10,9 @@ const cancelRecord: MessageButton = new MessageButton()
   .setStyle("grey")
   .setLabel("キャンセル")
 
-export { okRecord, cancelRecord };
+const stopRecord: MessageButton = new MessageButton()
+  .setID("stop")
+  .setStyle("blurple")
+  .setLabel("録音を停止");
+
+export { okRecord, cancelRecord, stopRecord };
