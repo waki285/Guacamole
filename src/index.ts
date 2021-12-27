@@ -4,6 +4,8 @@ import disbut from "discord-buttons";
 import { okRecord, cancelRecord } from "./static";
 import { VoiceConnection } from "discord.js";
 import { createReadStream, createWriteStream } from "fs"
+import { config } from "dotenv";
+config();
 
 const client:Client = new Client();
 const prefix:"r!" = "r!";
