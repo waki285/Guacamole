@@ -9,3 +9,5 @@ c.js
 i.sh
 *.pub
 dist
+output/*
+!.gitkeep
