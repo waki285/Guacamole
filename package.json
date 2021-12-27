@@ -4,7 +4,9 @@
   "description": "Record a Discord voice channel with discord.js v12.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
