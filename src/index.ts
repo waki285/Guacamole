@@ -67,7 +67,7 @@ client.on("message", async (message:Message) => {
       const receiver: VoiceReceiver = connection.receiver;
       connection.on("speaking", (user: User, speaking: Readonly<Speaking>) => {
         if (speaking) {
-          const now: Set<Snowflake> = recording.get(message.guild!.id) || new Set();
+          let now: Set<Snowflake> = recording.get(message.guild!.id) || new Set();
           if (now.has(user.id)) return;
           now.add(user.id);
           recording.set(message.guild!.id, now);
@@ -76,7 +76,12 @@ client.on("message", async (message:Message) => {
           const outputStream = createWriteStream(`./output/${Date.now()}-${user.id}.pcm`);
           audioStream.pipe(outputStream);
           outputStream.on("pipe", console.log);
-          audioStream.on("end", () => message.channel.send(`${user.tag} を録音停止しました。`));
+          audioStream.on("end", () => {
+            message.channel.send(`${user.tag} を録音停止しました。`);
+            now = recording.get(message.guild!.id) as Set<Snowflake>;
+            now.delete(message.guild!.id);
+            recording.set(message.guild!.id, now);
+          });
         }
       })
 
