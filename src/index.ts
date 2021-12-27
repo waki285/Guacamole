@@ -96,6 +96,7 @@ client.on("clickButton", async (button: MessageComponent) => {
     if (!button.guild.me.voice.channel) return button.reply.edit({ content: "録音されていません。"});
     recording.delete(button.guild.id);
     button.guild.me.voice.channel.leave();
+    button.reply.edit("録音を停止しました。")
   }
 })
 
